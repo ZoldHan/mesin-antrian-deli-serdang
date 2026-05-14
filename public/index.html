@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antrian Online - Disdukcapil Deli Serdang</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0; }
+        .card-antrian { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .status-badge { font-size: 1.2rem; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero text-center">
+        <div class="container">
+            <h1>🎫 Antrian Online Disdukcapil</h1>
+            <p class="lead">Kabupaten Deli Serdang</p>
+            <p>Daftar antrian dari rumah, tidak perlu antre lama!</p>
+        </div>
+    </div>
+
+    <!-- Form Daftar -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card card-antrian p-4">
+                    <h3 class="text-center mb-4">📝 Daftar Antrian</h3>
+                    
+                    <div id="alert-box"></div>
+                    
+                    <form id="form-antrian">
+                        <div class="mb-3">
+                            <label class="form-label">NIK</label>
+                            <input type="text" class="form-control" id="nik" placeholder="16 digit NIK" maxlength="16" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" class="form-control" id="nama" placeholder="Sesuai KTP" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nomor HP/WA</label>
+                            <input type="tel" class="form-control" id="no_hp" placeholder="08xxxxxxxxxx" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Layanan</label>
+                            <select class="form-select" id="layanan" required>
+                                <option value="">Pilih Layanan</option>
+                                <option value="KTP-El">KTP Elektronik</option>
+                                <option value="KK">Kartu Keluarga</option>
+                                <option value="Akta Kelahiran">Akta Kelahiran</option>
+                                <option value="Akta Kematian">Akta Kematian</option>
+                                <option value="Surat Pindah">Surat Pindah</option>
+                            </select>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <strong>📊 Kuota Hari Ini:</strong> 
+                            <span id="kuota-info">Memuat...</span>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            🎫 Ambil Nomor Antrian
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cek Status -->
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <div class="card card-antrian p-4">
+                    <h4 class="text-center mb-3">🔍 Cek Status Antrian</h4>
+                    <div class="input-group">
+                        <input type="tel" class="form-control" id="cek_no_hp" placeholder="Nomor HP">
+                        <button class="btn btn-outline-primary" onclick="cekStatus()">Cek</button>
+                    </div>
+                    <div id="status-result" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="row justify-content-center mt-5 mb-5">
+            <div class="col-md-8">
+                <div class="card card-antrian p-4">
+                    <h4 class="text-center mb-3">📈 Statistik Hari Ini</h4>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <h2 class="text-primary" id="stat-total">-</h2>
+                            <p>Total Antrian</p>
+                        </div>
+                        <div class="col-4">
+                            <h2 class="text-success" id="stat-selesai">-</h2>
+                            <p>Selesai</p>
+                        </div>
+                        <div class="col-4">
+                            <h2 class="text-warning" id="stat-menunggu">-</h2>
+                            <p>Menunggu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-4 mt-5">
+        <p class="mb-0">© 2026 Disdukcapil Kabupaten Deli Serdang</p>
+        <small>Jl. Negara No. 1, Lubuk Pakam | Telp: (061) 7951234</small>
+    </footer>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+
+        // Load kuota on page load
+        document.addEventListener('DOMContentLoaded', loadKuota);
+
+        // Load kuota harian
+        async function loadKuota() {
+            try {
+                const res = await fetch(`${API_URL}/antrian/tersedia`);
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('kuota-info').innerHTML = 
+                        `<strong>${data.tersebar}</strong> dari ${data.kuota} slot tersedia`;
+                }
+            } catch (error) {
+                console.error('Error loading kuota:', error);
+            }
+        }
+
+        // Submit form antrian
+        document.getElementById('form-antrian').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                nik: document.getElementById('nik').value,
+                nama: document.getElementById('nama').value,
+                no_hp: document.getElementById('no_hp').value,
+                layanan: document.getElementById('layanan').value
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/antrian/daftar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    showAlert('success', `
+                        <strong>✅ Antrian Berhasil!</strong><br>
+                        Nomor Antrian: <strong>${result.data.no_antrian}</strong><br>
+                        Estimasi: ${result.data.estimated_time}<br>
+                        SMS konfirmasi telah dikirim ke ${data.no_hp}
+                    `);
+                    document.getElementById('form-antrian').reset();
+                    loadKuota();
+                } else {
+                    showAlert('danger', `❌ ${result.error}`);
+                }
+            } catch (error) {
+                showAlert('danger', `❌ Terjadi kesalahan: ${error.message}`);
+            }
+        });
+
+        // Cek status antrian
+        async function cekStatus() {
+            const no_hp = document.getElementById('cek_no_hp').value;
+            
+            try {
+                const res = await fetch(`${API_URL}/antrian/status/${no_hp}`);
+                const result = await res.json();
+
+                if (result.success) {
+                    const statusClass = {
+                        'menunggu': 'warning',
+                        'dipanggil': 'primary',
+                        'selesai': 'success',
+                        'batal': 'danger'
+                    }[result.data.status];
+
+                    document.getElementById('status-result').innerHTML = `
+                        <div class="alert alert-${statusClass}">
+                            <strong>No Antrian:</strong> ${result.data.no_antrian}<br>
+                            <strong>Status:</strong> ${result.data.status.toUpperCase()}<br>
+                            <strong>Layanan:</strong> ${result.data.layanan}<br>
+                            <strong>Waktu Daftar:</strong> ${new Date(result.data.waktu_daftar).toLocaleString()}
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('status-result').innerHTML = 
+                        `<div class="alert alert-warning">⚠️ ${result.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('status-result').innerHTML = 
+                    `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Show alert
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alert-box');
+            alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alertBox.innerHTML = '', 5000);
+        }
+
+        // Auto refresh dashboard setiap 30 detik
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`${API_URL}/dashboard`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('stat-total').textContent = data.data.total_hari_ini;
+                    document.getElementById('stat-selesai').textContent = data.data.selesai;
+                    document.getElementById('stat-menunggu').textContent = data.data.menunggu;
+                }
+            } catch (error) {
+                console.error('Dashboard error:', error);
+            }
+        }
+
+        setInterval(loadDashboard, 30000);
+        loadDashboard();
+    </script>
+</body>
+</html>
