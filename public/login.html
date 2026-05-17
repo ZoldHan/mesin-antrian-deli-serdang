@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - Disdukcapil Deli Serdang</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-header h2 {
+            font-weight: 700;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .input-group-text {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            border-right: none;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .input-group .form-control:focus {
+            border-left: none;
+        }
+
+        .btn-login {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <i class="bi bi-building-fill"></i>
+            <h2>Admin Login</h2>
+            <p>Disdukcapil Kabupaten Deli Serdang</p>
+        </div>
+
+        <div id="alert-box"></div>
+
+        <form id="login-form">
+            <div class="mb-3">
+                <label class="form-label fw-bold">
+                    <i class="bi bi-person"></i> Username
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-person"></i>
+                    </span>
+                    <input type="text" class="form-control" id="username" placeholder="Masukkan username" required autofocus>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">
+                    <i class="bi bi-lock"></i> Password
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input type="password" class="form-control" id="password" placeholder="Masukkan password" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                        <i class="bi bi-eye" id="eye-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-login w-100">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="/" class="text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Kembali ke Homepage
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 Disdukcapil Kabupaten Deli Serdang</p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                // Verify token
+                fetch(`${API_URL}/auth/verify`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/admin.html';
+                    } else {
+                        localStorage.removeItem('adminToken');
+                    }
+                })
+                .catch(() => {
+                    localStorage.removeItem('adminToken');
+                });
+            }
+        });
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+            }
+        }
+
+        // Login form submission
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Logging in...';
+            
+            const data = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    // Save token
+                    localStorage.setItem('adminToken', result.token);
+                    localStorage.setItem('adminUser', JSON.stringify(result.user));
+                    
+                    // Show success
+                    showAlert('success', '✅ Login berhasil! Mengalihkan...');
+                    
+                    // Redirect after 1 second
+                    setTimeout(() => {
+                        window.location.href = '/admin.html';
+                    }, 1000);
+                } else {
+                    showAlert('danger', `❌ ${result.error}`);
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                showAlert('danger', `❌ Terjadi kesalahan: ${error.message}`);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+
+        // Show alert
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alert-box');
+            alertBox.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            setTimeout(() => alertBox.innerHTML = '', 5000);
+        }
+    </script>
+</body>
+</html>

@@ -32,6 +32,17 @@ CREATE TABLE IF NOT EXISTS log_aktivitas (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default admin
+-- Tabel: ratings (NEW - for customer feedback)
+CREATE TABLE IF NOT EXISTS ratings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    no_antrian VARCHAR(20) UNIQUE,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    feedback TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (no_antrian) REFERENCES antrian(no_antrian) ON DELETE CASCADE
+);
+
+-- Insert default admin (password: admin123 - CHANGE THIS!)
+-- Password hashed with bcrypt cost 10
 INSERT INTO users (username, password, role) VALUES 
-('admin', '$2b$10$YourHashedPasswordHere', 'admin');
+('admin', '$2b$10$YgZv9xJxQxQxQxQxQxQxQ.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'admin');

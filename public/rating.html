@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beri Rating - Disdukcapil Deli Serdang</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        .rating-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            padding: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .rating-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .rating-header i {
+            font-size: 3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .rating-header h2 {
+            font-weight: 700;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .rating-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-direction: row-reverse;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 3rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #ffc107;
+            transform: scale(1.1);
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-submit {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .ticket-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #2196f3;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="rating-card">
+            <div class="rating-header">
+                <i class="bi bi-star-fill"></i>
+                <h2>Beri Rating Layanan</h2>
+                <p>Bantu kami meningkatkan kualitas pelayanan</p>
+            </div>
+
+            <div id="alert-box"></div>
+
+            <div class="ticket-info" id="ticket-info">
+                <div class="text-center">
+                    <i class="bi bi-hourglass-split"></i> Loading...
+                </div>
+            </div>
+
+            <form id="rating-form">
+                <div class="mb-4">
+                    <label class="form-label fw-bold d-block text-center">
+                        Bagaimana penilaian Anda?
+                    </label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" required>
+                        <label for="star5" title="Sangat Baik"><i class="bi bi-star-fill"></i></label>
+                        
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4" title="Baik"><i class="bi bi-star-fill"></i></label>
+                        
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3" title="Cukup"><i class="bi bi-star-fill"></i></label>
+                        
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2" title="Kurang"><i class="bi bi-star-fill"></i></label>
+                        
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1" title="Sangat Kurang"><i class="bi bi-star-fill"></i></label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-chat-left-text"></i> Feedback (Opsional)
+                    </label>
+                    <textarea class="form-control" id="feedback" rows="4" 
+                              placeholder="Ceritakan pengalaman Anda menggunakan layanan kami..."></textarea>
+                    <small class="text-muted">Kritik dan saran Anda sangat berharga bagi kami</small>
+                </div>
+
+                <button type="submit" class="btn btn-submit w-100" disabled>
+                    <i class="bi bi-send"></i> Kirim Rating
+                </button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="/" class="text-decoration-none">
+                    <i class="bi bi-house"></i> Kembali ke Homepage
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2026 Disdukcapil Kabupaten Deli Serdang</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let noAntrian = null;
+
+        // Get no_antrian from URL
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            noAntrian = params.get('no');
+            
+            if (!noAntrian) {
+                showAlert('danger', '❌ Nomor antrian tidak ditemukan!');
+                document.getElementById('rating-form').querySelector('button').disabled = true;
+                return;
+            }
+            
+            // Load ticket info
+            loadTicketInfo();
+        });
+
+        // Load ticket information
+        async function loadTicketInfo() {
+            try {
+                const res = await fetch(`${API_URL}/antrian/status/${noAntrian}`);
+                const result = await res.json();
+                
+                if (result.success) {
+                    const ticket = result.data;
+                    const statusColors = {
+                        'menunggu': { color: 'warning', icon: '⏳' },
+                        'dipanggil': { color: 'primary', icon: '📢' },
+                        'selesai': { color: 'success', icon: '✅' },
+                        'batal': { color: 'danger', icon: '❌' }
+                    };
+                    const statusInfo = statusColors[ticket.status] || { color: 'secondary', icon: '❓' };
+
+                    document.getElementById('ticket-info').innerHTML = `
+                        <div class="text-center">
+                            <i class="bi bi-credit-card text-${statusInfo.color}" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2 fw-bold text-${statusInfo.color}">${statusInfo.icon} ${ticket.no_antrian}</h4>
+                            <p class="mb-1"><strong>Nama:</strong> ${ticket.nama}</p>
+                            <p class="mb-1"><strong>Layanan:</strong> ${ticket.layanan}</p>
+                            <p class="mb-0"><strong>Status:</strong> ${ticket.status.toUpperCase()}</p>
+                        </div>
+                    `;
+                    
+                    // Enable submit button only if service is completed
+                    const submitBtn = document.querySelector('#rating-form button');
+                    if (ticket.status === 'selesai') {
+                        submitBtn.disabled = false;
+                    } else if (ticket.status === 'menunggu' || ticket.status === 'dipanggil') {
+                        showAlert('warning', '⚠️ Silakan tunggu hingga layanan selesai untuk memberikan rating.');
+                        submitBtn.disabled = true;
+                    } else {
+                        showAlert('danger', '❌ Antrian sudah dibatalkan atau tidak valid.');
+                        submitBtn.disabled = true;
+                    }
+                } else {
+                    showAlert('danger', `❌ ${result.error}`);
+                    document.getElementById('ticket-info').innerHTML = `
+                        <div class="text-center text-muted">
+                            <i class="bi bi-x-circle"></i> Data antrian tidak ditemukan
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                showAlert('danger', `❌ Error: ${error.message}`);
+            }
+        }
+
+        // Form submission
+        document.getElementById('rating-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Mengirim...';
+            
+            const rating = document.querySelector('input[name="rating"]:checked').value;
+            const feedback = document.getElementById('feedback').value;
+            
+            const data = {
+                no_antrian: noAntrian,
+                rating: parseInt(rating),
+                feedback: feedback || null
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/rating`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    showAlert('success', `
+                        <div class="text-center">
+                            <i class="bi bi-check-circle-fill" style="font-size: 3rem;"></i>
+                            <h4 class="mt-2">Terima Kasih!</h4>
+                            <p>Rating Anda telah berhasil dikirim.<br>Feedback Anda sangat berharga untuk meningkatkan layanan kami.</p>
+                        </div>
+                    `);
+                    
+                    // Hide form
+                    document.getElementById('rating-form').style.display = 'none';
+                    
+                    // Redirect after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 3000);
+                } else {
+                    showAlert('danger', `❌ ${result.error}`);
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                showAlert('danger', `❌ Terjadi kesalahan: ${error.message}`);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+
+        // Show alert
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alert-box');
+            alertBox.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            setTimeout(() => alertBox.innerHTML = '', 10000);
+        }
+    </script>
+</body>
+</html>
