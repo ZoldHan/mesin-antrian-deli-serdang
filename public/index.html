@@ -35,6 +35,55 @@
             margin-bottom: 40px;
         }
 
+        .logos-container {
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo-official {
+            transition: transform 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 8px;
+        }
+
+        .logo-official:hover {
+            transform: scale(1.05);
+        }
+
+        .official-badge {
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .official-badge .badge {
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .hero::before {
             content: '';
             position: absolute;
@@ -221,9 +270,34 @@
     <!-- Hero Section -->
     <div class="hero text-center">
         <div class="container position-relative">
+            <!-- Logos -->
+            <div class="logos-container mb-4">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-auto">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Coat_of_arms_of_Deli_Serdang_Regency.svg/200px-Coat_of_arms_of_Deli_Serdang_Regency.svg.png" 
+                             alt="Logo Deli Serdang" 
+                             class="logo-official" 
+                             style="height: 80px; width: auto; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
+                    </div>
+                    <div class="col-auto mx-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Coat_of_arms_of_the_Ministry_of_Home_Affairs_of_the_Republic_of_Indonesia.svg/200px-Coat_of_arms_of_the_Ministry_of_Home_Affairs_of_the_Republic_of_Indonesia.svg.png" 
+                             alt="Logo Kemendagri" 
+                             class="logo-official" 
+                             style="height: 80px; width: auto; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
+                    </div>
+                </div>
+            </div>
+            
             <h1><i class="bi bi-people-fill"></i> Antrian Online Disdukcapil</h1>
             <p class="lead mt-3">Kabupaten Deli Serdang</p>
             <p class="mt-2"><i class="bi bi-house-door"></i> Daftar antrian dari rumah, tidak perlu antre lama!</p>
+            
+            <!-- Official Badge -->
+            <div class="official-badge mt-3">
+                <span class="badge bg-light text-dark">
+                    <i class="bi bi-shield-check"></i> Layanan Resmi Pemerintah Kabupaten Deli Serdang
+                </span>
+            </div>
         </div>
     </div>
 
